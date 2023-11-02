@@ -4,13 +4,20 @@ const { Category } = require('../models/category');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
-
+const axios = require('axios');
 const FILE_TYPE_MAP  ={
     'image/png' : 'png' ,
     'image/jpeg' : 'jpeg' ,
     'image/jpg' : 'jpg' ,
 
 }
+
+// URL du site web d'e-commerce où vous souhaitez effectuer la recherche
+const siteUrl = 'https://www.example.com';
+
+// Terme de recherche
+const searchTerm = 'nom_du_produit';
+
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,7 +26,7 @@ const storage = multer.diskStorage({
         if(isValid){
             uploadError = null;
         }
-      cb(uploadError, 'public/uploads')
+      cb(uploadError, 'views/uploads')
     },
     filename: function (req, file, cb) {
       const fileName = file.originalname.split(' ').join('-') ;
@@ -30,6 +37,25 @@ const storage = multer.diskStorage({
   
   const uploadOptions = multer({ storage: storage })
 
+// Placez la route de recherche en premier
+// Route de recherche de produits
+router.get('/search', async (req, res) => {
+    const query = req.query.query; // Récupérer la requête de recherche depuis l'URL
+
+    try {
+        const results = await Product.find({
+            $or: [
+                { name: { $regex: query, $options: 'i' } }, // Recherche insensible à la casse dans le nom du produit
+                { description: { $regex: query, $options: 'i' } }, // Recherche insensible à la casse dans la description
+            ]
+        }).populate('category');
+
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: 'Une erreur s\'est produite lors de la recherche de produits.' });
+    }
+});
 
 //afficher list de tout les produits (localhost:3000/api/v1/products) ou les produit par categories (localhost:3000/api/v1/products?categories=idcategory1,idcategory2)
 router.get(`/`,async (req, res) =>{
@@ -38,7 +64,7 @@ router.get(`/`,async (req, res) =>{
     if(req.query.categories){
         filter = {category: req.query.categories.split(',')}
     }
-    const productList = await Product.find(filter).select('name  image category _id isFeatured');
+    const productList = await Product.find(filter).populate('category');
 
     if(!productList) {
         res.status(500).json({success: false})
@@ -65,12 +91,12 @@ router.post(`/`,uploadOptions.single('image') , async(req, res) =>{
     if(!file) return res.status(400).send('no image in the request')
 
     const fileName =file.filename;
-    const basePath= `${req.protocol}://${req.get('host')}/public/uploads/`
+    const basePath= `${req.protocol}://${req.get('host')}/views/uploads/`
     const product = new Product({
         name: req.body.name,
-        description : req.body.description,
+        description : req.body.description, 
         richDesription : req.body.richDesription,
-        image: `${basePath}${fileName}`, //https://localhost:3000/pubic/uploads/image-1554
+        image: `http://localhost:3000/uploads/${fileName}`, //https://localhost:3000/views/image-1554
         price : req.body.price,
         category : req.body.category,
         countInStock: req.body.countInStock,
@@ -172,25 +198,27 @@ router.put('/gallery-images/:id',uploadOptions.array('images',10) , async(req,re
     if(!mongoose.isValidObjectId(req.params.id)){
         res.status(400).send('Invalid Product id')
     }
-    const files = req.files ;
+    const files = req.files ; 
     let imagesPaths =  [];
     const basePath= `${req.protocol}://${req.get('host')}/public/uploads/`;
     if(files){
         files.map(file=>{
             imagesPaths.push(`${basePath}${file.fileName}`);
-        })
+        }) 
     }
     let product = await Product.findByIdAndUpdate(req.params.id ,
-        {
-            images: imagesPaths,
-        },
+        { 
+            images: imagesPaths,  
+        },   
         {new : true }
-        ) 
-    if(!product)
+        )  
+    if(!product) 
         return res.status(500).send('the product cannot be updated')
     
     res.send(product);
 })
 
 
-module.exports=router;
+
+
+module.exports=router;      

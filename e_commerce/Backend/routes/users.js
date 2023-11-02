@@ -15,7 +15,7 @@ router.get(`/`, async (req, res) =>{
     res.send(userList);
 })
 
-//recherche user by Id
+//recherche user by Id 
 router.get('/:id', async(req,res)=>{
     const user = await User.findById(req.params.id).select('-passwordHash');
     if(!user) {
@@ -26,21 +26,21 @@ router.get('/:id', async(req,res)=>{
 })
 
 // Ajouter user
-router.post('/', async(req,res) => {
+router.post('/', async(req,res) => { 
     let user = new User({
         name: req.body.name,
         email: req.body.email,
-        passwordHash: await bcrypt.hashSync(req.body.passwordHash,10),
+        passwordHash : await bcrypt.hashSync(req.body.passwordHash,10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
         street: req.body.street,
-        apartment: req.body.apartment,
-        zip: req.body.zip, 
-        city: req.body.city,
-        country: req.body.country,
-    })
+        apartment: req.body.apartment,    
+        zip: req.body.zip,   
+        city: req.body.city,   
+        country: req.body.country,     
+    })   
     user = await user.save();
- 
+  
     if(!user)
     return res.status(400).send('the user cannot be created!')
 
@@ -80,12 +80,14 @@ if(req.body.password){
 })
 
 
-// Authentificate
+// Authentificate 
 router.post('/login',  async (req,res) => {
+
+    
     const user = await User.findOne({email: req.body.email})
     const secret = process.env.secret;
     if(!user) {
-        return res.status(400).send('The user not found');
+        return res.status(400).send('The user not found'); 
     }
 
     if(user &&  await bcrypt.compareSync(req.body.password, user.passwordHash)) {
@@ -108,17 +110,17 @@ router.post('/login',  async (req,res) => {
 // Register user
 router.post('/register', async(req,res) => {
     let user = new User({
-        name: req.body.name,
+        name: req.body.name, 
         email: req.body.email,
         passwordHash: await bcrypt.hashSync(req.body.passwordHash,10),
         phone: req.body.phone,
         isAdmin: req.body.isAdmin,
-        street: req.body.street,
-        apartment: req.body.apartment,
+        street: req.body.street,  
+        apartment: req.body.apartment,  
         zip: req.body.zip, 
-        city: req.body.city,
+        city: req.body.city, 
         country: req.body.country,
-    })
+    })  
     user = await user.save();
  
     if(!user)
@@ -151,5 +153,7 @@ router.delete('/:id',async(req,res)=>{
         return res.status(400).json({success: false ,error : err})
     })
 })
+
+
 
 module.exports =router;

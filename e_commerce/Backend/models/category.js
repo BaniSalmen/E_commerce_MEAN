@@ -13,7 +13,7 @@ const categorySchema = mongoose.Schema({
     color: {
         type : String,
     },
-
+ 
 })
 
 exports.Category = mongoose.model('Category', categorySchema);

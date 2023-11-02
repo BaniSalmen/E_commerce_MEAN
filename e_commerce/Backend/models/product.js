@@ -20,6 +20,7 @@ const productSchema = mongoose.Schema({
     },
     Images : [{
         type :  String,
+        default:''
     }],
     brand: {
         type : String,
@@ -38,7 +39,7 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: true,
         min: 0 ,
-        max: 255
+        max: 255 
     },
     rating: {
         type : Number,

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cors = require('cors'); 
 require('dotenv/config');
 const authJwt = require('./helpers/jwt');
+const path = require('path');
 
 
 app.use(cors()); 
@@ -14,7 +15,9 @@ app.options('*', cors())
 //middleware 
 app.use(bodyParser.json());
 app.use(morgan('tiny'));
-app.use('public/uploads', express.static(__dirname +'/public/uploads'));
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(`${__dirname}/views`));
 app.use(authJwt);  
  
 app.use((err ,req , res , next )=>{
@@ -29,7 +32,7 @@ app.use((err ,req , res , next )=>{
     }
     //server error
     res.status(500).json(err);
-})
+});
   
 //Routes
 const categoriesRoutes = require('./routes/categories');
@@ -43,6 +46,9 @@ app.use(`${api}/categories`, categoriesRoutes);
 app.use(`${api}/products`, productsRoutes);
 app.use(`${api}/users`, usersRoutes);
 app.use(`${api}/orders`, ordersRoutes);
+
+
+
 
 
 //Database 

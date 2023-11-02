@@ -7,14 +7,14 @@ const router = express.Router();
 const multer = require('multer');
 
 //afficher tout les orders
-router.get(`/`, async (req, res) =>{
-    const orderList = await Order.find().populate('user','name').sort({'dateOrdered':-1});
+router.get(`/`, async (req, res) =>{ 
+    const orderList = await Order.find().populate('user');
 
     if(!orderList) {
         res.status(500).json({success: false})
     } 
     res.send(orderList);
-})
+}) 
 
 //afficher un order by id (recherche)
 router.get(`/:id`, async (req, res) =>{
@@ -32,7 +32,7 @@ router.get(`/:id`, async (req, res) =>{
 
 // Ajouter Order et calculer la sommme des prix de produit
 router.post('/',async(req,res)=>{
-const orderItemsIds = Promise.all( req.body.orderItems.map(async orderItem =>{
+    const orderItemsIds = Promise.all( req.body.orderItems.map(async orderItem =>{
 
         let newOrderItem = new OrderItem({
             quantity : orderItem.quantity ,
@@ -76,6 +76,47 @@ const orderItemsIds = Promise.all( req.body.orderItems.map(async orderItem =>{
 
     res.send(order);
 })
+
+const stripe = require('stripe')('sk_test_51N6ebULVbJpIoXMkDDxwScjRxrlbzzpwXbpAk75jxKCBMhN1q7sN12t3uLM6aiMTDwqTNUBNtC7dUyBqurDVAvnB00feWhfMc8');
+
+router.post('/create-checkout-session', async (req, res) => {
+    const orderItems = req.body;
+
+    if (!orderItems) {
+        return res.status(400).send('Checkout session cannot be created - check the order items');
+    } 
+ 
+    const lineItems = await Promise.all(orderItems.map(async (orderItem) => {
+        const product = await Product.findById(orderItem.product);
+        return {
+            price_data: {
+                currency: 'usd',
+                product_data: {
+                    name: product?.name
+                }, 
+                unit_amount: product?.price * 100
+            },
+            quantity: orderItem.quantity
+        };
+    })); 
+
+    try {
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: lineItems,
+            mode: 'payment',
+            success_url: 'http://localhost:4200/success',
+            cancel_url: 'http://localhost:4200/error',
+        });
+        res.json({ id: session.id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creating the Checkout session');
+    }
+});
+
+
+
 
 //sum des ventes
 router.get('/get/totalsales' ,async (req,res)=>{

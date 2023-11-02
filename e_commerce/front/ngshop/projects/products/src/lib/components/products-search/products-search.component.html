@@ -1,0 +1,35 @@
+<!-- <div class="products-search">
+    <i class="pi pi-search "></i>
+    <input
+      type="text"
+      placeholder="Find products"
+      class="products-search-input"
+      name="search"
+      id="search"
+      
+    />
+
+  </div>
+  -->
+
+  <form (ngSubmit)="searchProducts()">
+    <i class="pi pi-search "></i>
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Find products"
+      class="products-search-input"
+      name="searchTerm"
+      id="search"
+      (input)="searchProducts()"
+      
+    /> 
+    </form>
+  
+    <!-- <input type="text" [(ngModel)]="searchTerm" name="searchTerm" placeholder="Rechercher des produits">
+    <button type="submit">Rechercher</button> -->
+    
+  
+
+
+  

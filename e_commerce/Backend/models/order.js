@@ -37,14 +37,14 @@ const orderSchema = mongoose.Schema({
         type : Number,
         default : 0,
     },
-    user : {
+    user : { 
         type :mongoose.Schema.Types.ObjectId,
         ref : 'User'
-      
-    },
+       
+    }, 
     dateOrdered:{
         type : Date,
-        default  : Date.now
+        default  : Date.now 
     },
 
 })

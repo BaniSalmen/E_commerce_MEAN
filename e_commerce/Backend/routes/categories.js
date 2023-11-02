@@ -12,8 +12,8 @@ router.get(`/`, async (req, res) =>{
     } 
     res.status(200).send(categoryList);
 })
-
-//recherche categorie by Id
+ 
+//recherche categorie by Id 
 router.get('/:id', async(req,res)=>{
     const category = await Category.findById(req.params.id);
     if(!category) {
@@ -24,7 +24,7 @@ router.get('/:id', async(req,res)=>{
 })
 
 // Ajouter Category
-router.post('/',async(req,res)=>{
+router.post('/',async(req,res)=>{  
     let category = new Category({
         name : req.body.name,
         icon: req.body.icon,
