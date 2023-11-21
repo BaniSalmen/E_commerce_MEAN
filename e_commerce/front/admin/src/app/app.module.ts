@@ -17,7 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { DropdownModule } from 'primeng/dropdown';
+import {DropdownModule} from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import {EditorModule} from 'primeng/editor';
@@ -43,7 +43,8 @@ import { OrdersDetailComponent } from './pages/orders/orders-detail/orders-detai
 import { UsersModule } from './../../projects/users/src/lib/users.module';
 import {  Jwt1Interceptor } from 'projects/users/src/public-api';
 import { NgxStripeModule } from 'ngx-stripe';
-
+import {ListboxModule} from 'primeng/listbox';
+import { RatingModule } from 'primeng/rating';
 
 const UX_MODULE =[
   CardModule,
@@ -64,6 +65,9 @@ const UX_MODULE =[
   FieldsetModule,
   MultiSelectModule,
   AutoCompleteModule,
+  ListboxModule,
+  RatingModule
+  
 ]
 
 @NgModule({

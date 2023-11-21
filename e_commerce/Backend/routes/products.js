@@ -4,12 +4,12 @@ const { Category } = require('../models/category');
 const router = express.Router();
 const mongoose = require('mongoose');
 const multer = require('multer');
+
 const axios = require('axios');
 const FILE_TYPE_MAP  ={
     'image/png' : 'png' ,
     'image/jpeg' : 'jpeg' ,
     'image/jpg' : 'jpg' ,
-
 }
 
 // URL du site web d'e-commerce où vous souhaitez effectuer la recherche
@@ -17,8 +17,7 @@ const siteUrl = 'https://www.example.com';
 
 // Terme de recherche
 const searchTerm = 'nom_du_produit';
-
-
+ 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         const isValid =FILE_TYPE_MAP[file.mimetype];
@@ -26,7 +25,7 @@ const storage = multer.diskStorage({
         if(isValid){
             uploadError = null;
         }
-      cb(uploadError, 'views/uploads')
+      cb(uploadError, 'views/uploads') 
     },
     filename: function (req, file, cb) {
       const fileName = file.originalname.split(' ').join('-') ;
@@ -34,7 +33,8 @@ const storage = multer.diskStorage({
       cb(null, `${fileName}-${Date.now()}.${extension}`)
     }
   })
-  
+
+
   const uploadOptions = multer({ storage: storage })
 
 // Placez la route de recherche en premier
@@ -63,14 +63,14 @@ router.get(`/`,async (req, res) =>{
     let filter = {};
     if(req.query.categories){
         filter = {category: req.query.categories.split(',')}
-    }
+    } 
     const productList = await Product.find(filter).populate('category');
 
     if(!productList) {
         res.status(500).json({success: false})
     } 
-    res.send(productList);
-})
+    res.send(productList); 
+}) 
 
 //afficher un produit by id (recherche)
 router.get(`/:id`, async (req, res) =>{
@@ -87,22 +87,22 @@ router.post(`/`,uploadOptions.single('image') , async(req, res) =>{
 
     const category = await Category.findById(req.body.category)
     if(!category) return res.status(400).send('Invalid Category')
-    const file = req.file;
+    const file = req.file; 
     if(!file) return res.status(400).send('no image in the request')
 
-    const fileName =file.filename;
-    const basePath= `${req.protocol}://${req.get('host')}/views/uploads/`
-    const product = new Product({
+    const fileName =file.filename;  
+    const basePath= `${req.protocol}://${req.get('host')}/views/uploads`
+    const product = new Product({ 
         name: req.body.name,
         description : req.body.description, 
         richDesription : req.body.richDesription,
         image: `http://localhost:3000/uploads/${fileName}`, //https://localhost:3000/views/image-1554
         price : req.body.price,
-        category : req.body.category,
-        countInStock: req.body.countInStock,
-        rating: req.body.rating,
-        numReviews: req.body.numReviews,
-        isFeatured: req.body.isFeatured,
+        category : req.body.category, 
+        countInStock: req.body.countInStock, 
+        rating: req.body.rating,   
+        numReviews: req.body.numReviews, 
+        isFeatured: req.body.isFeatured,  
         
     })
 
@@ -129,7 +129,7 @@ router.put('/:id',uploadOptions.single('image') , async(req,res)=>{
     let imagePath;
     if(file){
         const fileName =file.filename;
-        const basePath= `${req.protocol}://${req.get('host')}/public/uploads/`;
+        const basePath= `${req.protocol}://${req.get('host')}/uploads/`;
         imagePath=`${basePath}${fileName}`;
     }else{
         imagePath=product.image;
@@ -194,31 +194,34 @@ router.get(`/get/Featured/:count`, async (req, res) =>{
     res.send( products)
 })
 
-router.put('/gallery-images/:id',uploadOptions.array('images',10) , async(req,res)=>{
-    if(!mongoose.isValidObjectId(req.params.id)){
-        res.status(400).send('Invalid Product id')
+router.put('/gallery-images/:id', uploadOptions.array('images', 10), async (req, res) => {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        return res.status(400).send('Invalid Product Id');
     }
-    const files = req.files ; 
-    let imagesPaths =  [];
-    const basePath= `${req.protocol}://${req.get('host')}/public/uploads/`;
-    if(files){
-        files.map(file=>{
-            imagesPaths.push(`${basePath}${file.fileName}`);
-        }) 
-    }
-    let product = await Product.findByIdAndUpdate(req.params.id ,
-        { 
-            images: imagesPaths,  
-        },   
-        {new : true }
-        )  
-    if(!product) 
-        return res.status(500).send('the product cannot be updated')
-    
-    res.send(product);
-})
+    const files = req.files;
+    let imagesPaths = [];
+    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+
+    if (files) {
+        files.map((file) => {
+            imagesPaths.push(`${basePath}${file.filename}`);
+        });
+    } 
+
+    const product = await Product.findByIdAndUpdate(
+        req.params.id, 
+        {
+            Images: imagesPaths
+        },
+        { new: true }  
+    );
+
+    if (!product) return res.status(500).send('the gallery cannot be updated!');
+
+    res.send(product); 
+});
 
 
 
 
-module.exports=router;      
+module.exports=router;       

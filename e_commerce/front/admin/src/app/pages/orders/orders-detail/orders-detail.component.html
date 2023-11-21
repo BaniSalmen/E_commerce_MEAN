@@ -16,7 +16,15 @@
         <div class="p-col-4">
           <h5>Order Status</h5>
           
-          <p-autoComplete [(ngModel)]="selectedStatus" [options]="orderStatuses" [dropdown]="true" [suggestions]="orderStatuses" (completeMethod)="onStatusChange($event)" field="name"></p-autoComplete>
+          <p-autoComplete 
+          [(ngModel)]="selectedStatus" 
+          [options]="orderStatuses" 
+          [dropdown]="true" 
+          [suggestions]="orderStatuses" 
+          (completeMethod)="onStatusChange($event)" 
+          field="name"></p-autoComplete> 
+
+          
         </div>
 
         <div class="p-col-4">

@@ -6,6 +6,7 @@ import { MessageService } from 'primeng/api';
 import { User } from 'projects/users/src/lib/models/user';
 import { timer } from 'rxjs';
 import { UsersService } from 'projects/users/src/lib/services/users.service';
+import * as countriesLib from "i18n-iso-countries";
 
 declare const require;
 @Component({
@@ -48,7 +49,7 @@ export class UsersFormComponent implements OnInit{
   ngOnInit(): void {
     this._initUserForm();
     this._checkEditMode();
-    //this._getCountries();
+    this._getCountries();
 
   }
 
@@ -67,7 +68,7 @@ export class UsersFormComponent implements OnInit{
     });
   }
 
-  /* private _getCountries() {
+  private _getCountries() {
     countriesLib.registerLocale(require("i18n-iso-countries/langs/en.json"));
     this.countries = Object.entries(countriesLib.getNames("en",{select :"official"})).map(
       (entry)=>{
@@ -77,7 +78,7 @@ export class UsersFormComponent implements OnInit{
       }
     });
     console.log(this.countries);
-  } */
+  }
 
   
 
@@ -106,6 +107,7 @@ export class UsersFormComponent implements OnInit{
   }
 
   private _updateUser(user: User) {
+    user.password = "";
     this.usersService.updateUser(this.user).subscribe(
       (response) => {
         this.messageService.add({
@@ -172,6 +174,7 @@ export class UsersFormComponent implements OnInit{
       this.user.zip= this.userForm['zip'].value;
       this.user.city= this.userForm['city'].value;
       this.user.country= this.userForm['country'].value;
+      this.user.password= this.userForm['password'].value;
     
       
     if (this.editmode) {
@@ -181,7 +184,7 @@ export class UsersFormComponent implements OnInit{
     }
   }
 
-  onCancel() {
+  onCancle() {
     this.location.back();
   }
 

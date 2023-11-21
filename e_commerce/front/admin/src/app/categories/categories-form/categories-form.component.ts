@@ -20,7 +20,7 @@ export class CategoriesFormComponent implements OnInit {
 
 
   category:Category = {
-    id:"",
+    _id:"",
     name:"",
     icon:"",
     color:"" 
@@ -48,7 +48,7 @@ export class CategoriesFormComponent implements OnInit {
     if(this.form.invalid){
       return;
     }
-      this.category.id=this.currentCategoryId;
+      this.category._id=this.currentCategoryId;
       this.category.name= this.categoryForm['name'].value;
       this.category.icon= this.categoryForm['icon'].value;
       this.category.color= this.categoryForm['color'].value; 

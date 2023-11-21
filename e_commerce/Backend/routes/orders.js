@@ -7,28 +7,34 @@ const router = express.Router();
 const multer = require('multer');
 
 //afficher tout les orders
-router.get(`/`, async (req, res) =>{ 
-    const orderList = await Order.find().populate('user');
+router.get(`/`, async (req, res) => {
+  const orderList = await Order.find()
+    .populate("user", "name")
+    .sort({ dateOrdered: -1 });
 
-    if(!orderList) {
-        res.status(500).json({success: false})
-    } 
-    res.send(orderList);
-}) 
+  if (!orderList) {
+    res.status(500).json({ success: false });
+  }
+  res.send(orderList);
+});
 
 //afficher un order by id (recherche)
-router.get(`/:id`, async (req, res) =>{
-    const order = await Order.findById(req.params.id)
-    .populate('user','name')
-    .populate({path: 'orderItems' , populate:{
-        path : 'product' , populate : 'category'
-    }});
+router.get(`/:id`, async (req, res) => {
+  const order = await Order.findById(req.params.id)
+    .populate("user", "name")
+    .populate({
+      path: "orderItems",
+      populate: {
+        path: "product",
+        populate: "category",
+      },
+    });
 
-    if(!order) {
-        res.status(500).json({success: false})
-    } 
-    res.send(order);
-})
+  if (!order) {
+    res.status(500).json({ success: false });
+  }
+  res.send(order);
+});
 
 // Ajouter Order et calculer la sommme des prix de produit
 router.post('/',async(req,res)=>{
@@ -41,7 +47,7 @@ router.post('/',async(req,res)=>{
   
       newOrderItem = await newOrderItem.save();
 
-      return newOrderItem._id;  
+      return newOrderItem._id;    
     }))
      
     const orderItemsIdsResolved = await orderItemsIds; 
@@ -68,9 +74,9 @@ router.post('/',async(req,res)=>{
         status:req.body.status, 
         totalPrice: totalPrice,
         User : req.body.User,    
-    }) 
+    })    
     order = await order.save();  
-    
+     
     if(!order)  
     return res.status(404).send('the order cannot be created')
 
@@ -151,6 +157,7 @@ router.get(`/get/count`, async (req, res) =>{
     } 
     res.send(userOrderList);
 })*/
+
 // Define the route to get the user orders
 router.get('/get/userorders/:userid', async (req, res) => {
     try {

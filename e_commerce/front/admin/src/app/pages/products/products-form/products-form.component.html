@@ -64,8 +64,18 @@
             <div class="p-field p-col-4">
               <label for="category">category</label><br />
               
-              <input formControlName="category" id="category" type="text" pInputText />
-
+              <p-dropdown [options]="categories" 
+              formControlName="category"
+              optionLabel="name"
+              optionValue="id"
+              [filter]="true"
+              filterBy="name"
+              [showClear]="true"
+              placeholder="Select a category" 
+               >
+            </p-dropdown>
+              <!-- <p-selectButton [options]="categories" formControlName="category" optionLabel="name"></p-selectButton> -->
+              <!-- <p-listbox [options]="categories" formControlName="category" optionLabel="name"></p-listbox> -->
               <small *ngIf="form.get('category').invalid && isSubmitted" class="p-error">
                 Category is required</small>
 
@@ -97,6 +107,7 @@
               ></textarea>
               <!-- <p-editor formControlName="richDescription" [style]="{ height: '320px' }"></p-editor>-->
             </div>
+
             <div class="p-field p-col-12">
               <label for="name">Main Image</label>
               <input

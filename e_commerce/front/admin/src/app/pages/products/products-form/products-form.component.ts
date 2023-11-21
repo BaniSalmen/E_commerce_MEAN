@@ -18,7 +18,7 @@ export class ProductsFormComponent implements OnInit{
   editmode = false;
   form: FormGroup;
   isSubmitted = false;
-  categories : Category[] =[];
+  categories : Category[] ;
   imageDisplay: string | ArrayBuffer;
   currentProductId: string;
 
@@ -71,13 +71,13 @@ export class ProductsFormComponent implements OnInit{
   }
 
   private _checkEditMode() {
-    this.route.params.subscribe((params) => {
-      if (params['_id']) {
+    this.route.params.subscribe((params) => { 
+      if (params['_id']) { 
         this.editmode = true;
         this.currentProductId = params['_id'];
         this.productsService.getProduct(params['_id']).subscribe((product) => {
           this.productForm['name'].setValue(product.name);
-          this.productForm['category'].setValue(product.category.id);
+          this.productForm['category'].setValue(product.category._id);
           this.productForm['brand'].setValue(product.brand);
           this.productForm['price'].setValue(product.price);
           this.productForm['countInStock'].setValue(product.countInStock);
@@ -110,6 +110,7 @@ export class ProductsFormComponent implements OnInit{
       this._addProduct(productFormData);
     }
   }
+  
   onCancel() {
     this.location.back();
   }

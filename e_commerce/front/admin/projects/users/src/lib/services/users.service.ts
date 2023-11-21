@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { User } from '../models/user';
+import * as countriesLib from "i18n-iso-countries";
+
 
 declare const require;
 
@@ -12,6 +14,7 @@ export class UsersService {
  
 
   constructor(private http: HttpClient) {
+    countriesLib.registerLocale(require('i18n-iso-countries/langs/en.json'));
   }
 
   getUsers(): Observable<User[]> {
@@ -34,10 +37,19 @@ export class UsersService {
     return this.http.delete<any>(`http://localhost:3000/api/v1/users/${userId}`);
   }
 
+  getCountries(): { id: string; name: string }[] {
+    return Object.entries(countriesLib.getNames('en', { select: 'official' })).map((entry) => {
+      return {
+        id: entry[0],
+        name: entry[1]
+      };
+    });
+  }
 
-  /**getCountry(countryKey: string): string {
+  getCountry(countryKey: string): string {
     return countriesLib.getName(countryKey, 'en');
-  }*/
+  }
+
   getUsersCount(): Observable<number> {
     return this.http
       .get<number>(`http://localhost:3000/api/v1/users/get/count`)

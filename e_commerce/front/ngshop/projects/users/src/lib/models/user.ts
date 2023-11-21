@@ -1,7 +1,7 @@
 export class User {
     id?: string;
     name?: string;
-    passwordHash?: string;
+    password?: string;
     email: string;
     phone?: string;
     token?: string;

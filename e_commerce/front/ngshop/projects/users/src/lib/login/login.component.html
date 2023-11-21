@@ -19,13 +19,13 @@
                 <div class="p-inputgroup">
                   <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
                   <input
-                    type="passwordHash"
-                    formControlName="passwordHash"
+                    type="password"
+                    formControlName="password"
                     pInputText
                     placeholder="password"
                   />
                 </div>
-                <small *ngIf="loginForm['passwordHash'].invalid && isSubmitted" class="p-error">Password is required
+                <small *ngIf="loginForm['password'].invalid && isSubmitted" class="p-error">Password is required
                 </small>
               </div>
               <div class="col-12">

@@ -23,7 +23,7 @@ export class RegisterFormComponent implements OnInit{
   user:User = {
     id: "",
     name: "",
-    passwordHash: "",
+    password: "",
     email:"",
     phone: "",
     token: "",
@@ -53,7 +53,7 @@ export class RegisterFormComponent implements OnInit{
   private _initUserForm() {
     this.form = this.formBuilder.group({
       name: ['', Validators.required],
-      passwordHash: ['', Validators.required],
+      password: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       isAdmin: [false],
@@ -104,6 +104,7 @@ export class RegisterFormComponent implements OnInit{
   }
 
   private _updateUser(user: User) {
+    
     this.usersService.updateUser(this.user).subscribe(
       (response) => {
         this.messageService.add({
@@ -147,8 +148,8 @@ export class RegisterFormComponent implements OnInit{
           this.userForm['city'].setValue(user.city);
           this.userForm['country'].setValue(user.country);
 
-          this.userForm['passwordHash'].setValidators([]);
-          this.userForm['passwordHash'].updateValueAndValidity();
+          this.userForm['password'].setValidators([]);
+          this.userForm['password'].updateValueAndValidity();
         });
       }
     });
@@ -170,6 +171,7 @@ export class RegisterFormComponent implements OnInit{
       this.user.zip= this.userForm['zip'].value;
       this.user.city= this.userForm['city'].value;
       this.user.country= this.userForm['country'].value;
+      this.user.password=this.userForm['password'].value;
     
       
     if (this.editmode) {

@@ -8,6 +8,7 @@ import { OrdersService } from '../../services/orders.service';
 import { OrderItem } from '../../models/order-item';
 import { UsersService } from 'projects/users/src/lib/services/users.service';
 import { ORDER_STATUS } from '../../order.constants';
+import { LocalstorageService } from 'projects/users/src/lib/services/localstorage.service';
 
 @Component({
   selector: 'lib-checkout-page',
@@ -18,8 +19,8 @@ export class CheckoutPageComponent implements OnInit{
   checkoutFormGroup: FormGroup;
   isSubmitted = false;
   orderItems: OrderItem[] = [];
-  userId = '63f682df5f27e6f63708c804';
   countries = [];
+  userId = '640cb5c5f7bb6245f4c0f8fe';
   
   constructor(
     private router: Router,
@@ -41,6 +42,7 @@ export class CheckoutPageComponent implements OnInit{
   backToCart(){
     this.router.navigate(['/cart']);
   }
+
   private _initCheckoutForm() {
     this.checkoutFormGroup = this.formBuilder.group({
       name: ['', Validators.required],
@@ -65,6 +67,7 @@ export class CheckoutPageComponent implements OnInit{
     console.log(this.orderItems);
   }
 
+
   private _getCountries() {
     this.countries = this.usersService.getCountries();
   }
@@ -75,7 +78,7 @@ export class CheckoutPageComponent implements OnInit{
     if (this.checkoutFormGroup.invalid) {
       return;
     }
-
+ 
     const order: Order = {
       orderItems: this.orderItems,
       shippingAddress1: this.checkoutForm.street.value,

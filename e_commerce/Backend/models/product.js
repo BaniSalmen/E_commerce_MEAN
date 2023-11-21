@@ -1,4 +1,4 @@
-const { json } = require('body-parser');
+
 const mongoose = require('mongoose');
 
 const productSchema = mongoose.Schema({
@@ -46,9 +46,9 @@ const productSchema = mongoose.Schema({
         default : 0,
     },
     numReviews: {
-        type : Number,
+        type : Number, 
         default : 0,
-    },
+    }, 
     isFeatured: {
         type : Boolean,
         default : false,
@@ -57,8 +57,8 @@ const productSchema = mongoose.Schema({
         type : Date,
         default : Date.now,
     },
-})
-
+}) 
+  
 productSchema.virtual('id').get(function(){
     return this._id.toHexString();
 });

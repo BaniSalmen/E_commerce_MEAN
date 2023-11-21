@@ -12,15 +12,17 @@ import { LocalstorageService } from './localstorage.service';
 @Injectable()
 export class Jwt1Interceptor implements HttpInterceptor {
 
-  constructor(private localstorageToken : LocalstorageService) {}
+
+  constructor(private localstorageToken: LocalstorageService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.localstorageToken.getToken();
-    const isAPIUrl = request.url.startsWith('http://localhost:3000/api/v1/');
-    if (isAPIUrl && token) {
+    const isAPIUrl = request.url.startsWith(`http://localhost:3000/api/v1/`);
+
+    if (token && isAPIUrl) {
       request = request.clone({
-        setHeaders:{
-          Authorization :`Bearer ${token}`
+        setHeaders: {
+          Authorization: `Bearer ${token}`
         }
       });
     }
